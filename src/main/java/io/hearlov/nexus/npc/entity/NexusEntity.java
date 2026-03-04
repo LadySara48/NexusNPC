@@ -1,0 +1,119 @@
+package io.hearlov.nexus.npc.entity;
+
+import cn.nukkit.Player;
+import cn.nukkit.entity.EntityHuman;
+import cn.nukkit.entity.custom.CustomEntity;
+import cn.nukkit.entity.custom.CustomEntityDefinition;
+import cn.nukkit.entity.data.Skin;
+import cn.nukkit.level.format.IChunk;
+import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.nbt.tag.StringTag;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class NexusEntity extends EntityHuman implements CustomEntity{
+
+    public List<String> command;
+    public NPCCommandSender commandSender;
+    public boolean NameTagAlwaysVisible;
+
+    public static final String IDENTIFIER = "minecraft:player";
+    @Override public @NotNull String getIdentifier(){ return IDENTIFIER; }
+
+    public NexusEntity(IChunk chunk, CompoundTag nbt){
+        super(chunk, nbt);
+    }
+
+    @Override
+    protected void initEntity(){
+        super.initEntity();
+
+        this.NameTagAlwaysVisible = this.namedTag.getBoolean("NTV");
+
+        setNameTagVisible(true);
+        if(this.NameTagAlwaysVisible) super.setNameTagAlwaysVisible(true);
+        if(this.namedTag.containsString("NameTag")) super.setNameTag(namedTag.getString("NameTag"));
+
+        List<StringTag> commands = namedTag.getList("commands", StringTag.class).getAll();
+        List<String> cmnds = new ArrayList<>();
+        for(StringTag tag : commands){
+            cmnds.add(tag.data);
+        }
+        this.command = cmnds;
+        commandSender = new NPCCommandSender(this);
+
+    }
+
+    @Override
+    public void saveNBT() {
+        super.saveNBT();
+
+        ListTag<StringTag> tag = new ListTag<>();
+        for (String cmnd : this.command) {
+            tag.add(new StringTag(cmnd));
+        }
+        this.namedTag.putList("commands", tag);
+        this.namedTag.putBoolean("NTV", this.NameTagAlwaysVisible);
+    }
+
+    @Override
+    public void setNameTag(String name) {
+        this.namedTag.putString("NameTag", name);
+        super.setNameTag(name);
+    }
+
+    @Override
+    public void setNameTagAlwaysVisible(boolean nameTagAlwaysVisible) {
+        this.NameTagAlwaysVisible = nameTagAlwaysVisible;
+        super.setNameTagAlwaysVisible(nameTagAlwaysVisible);
+    }
+
+    public void removeCommand(String cmd){
+        this.command.remove(cmd);
+    }
+
+    public void addCommand(String cmd){
+        if(this.command == null) this.command = new ArrayList<>();
+        this.command.add(cmd);
+    }
+
+    public List<String> getCommands(){
+        return this.command;
+    }
+
+    public void onAttackOrInteract(Player player){
+        if(EntityListen.isInteractive(player)){
+            EntityListen.onInteract(player, this);
+            return;
+        }
+        for(String cmnd : command){
+            String cmd = cmnd.replace("{player}", player.getName());
+            player.getServer().executeCommand(commandSender, cmd);
+        }
+    }
+
+    @Override
+    public void setSkin(Skin skin){
+        super.setSkin(skin);
+    }
+
+    public static CustomEntityDefinition definition(){
+        return CustomEntityDefinition.simpleBuilder(IDENTIFIER)
+                .eid(IDENTIFIER)
+                .hasSpawnEgg(false) // If true, a spawn egg of this entity will be generated and can be found in the creative inventory
+                .isSummonable(false) // If false, you cannot spawn this entity by commands
+                .originalName("Human") // A display name for the entity
+                .maxHealth(220) // Define the max health
+                .attack(0) // If the mob can attack you can define here its melee power
+                .movement(0.1f, 7.0f) // Default movement speed
+                .typeFamily("human") // Type family of the mob, useful for filterings on API and commands
+                .collisionBox(2f, 2f) // Collision box of the entity, where you can hit/interact with it
+                .knockbackResistance(0.6f) // The entity resistance against physical attacks
+                .maxAutoStep(1.0625f, 1.0625f, 0.5625f) // You can define the max auto-step of the entity, making it move over blocks without need to jump
+                .isPersistent(true) // If set true, the entity never despawns from distance
+                .build();
+    }
+}

@@ -1,0 +1,63 @@
+package io.hearlov.nexus.npc;
+
+import cn.nukkit.command.Command;
+import cn.nukkit.plugin.PluginBase;
+import io.hearlov.nexus.npc.command.DispatchPlayerCommand;
+import io.hearlov.nexus.npc.command.NPCCommand;
+import io.hearlov.nexus.npc.command.NexusNPCCommand;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.nukkit.registry.RegisterException;
+import cn.nukkit.registry.Registries;
+import io.hearlov.nexus.npc.command.NexusSkinCommand;
+import io.hearlov.nexus.npc.entity.NexusEntity;
+import io.hearlov.nexus.npc.skin.SkinCache;
+
+public class NexusNPC extends PluginBase{
+
+    private static NexusNPC instance;
+    public static NexusNPC getInstance(){ return instance; }
+
+    @Override
+    public void onLoad(){
+        instance = this;
+        __initEntity();
+    }
+
+    @Override
+    public void onEnable(){
+        __initCommand();
+
+        getServer().getPluginManager().registerEvents(new io.hearlov.nexus.npc.listener.EntityListener(), this);
+
+        if(!getDataFolder().exists()){
+            if(!getDataFolder().mkdir()) getServer().getPluginManager().disablePlugin(this);
+        }
+
+        SkinCache.setup(getDataFolder().getAbsoluteFile().toPath());
+    }
+
+    public void __initEntity(){
+        try {
+            Registries.ENTITY.registerCustomEntity(this, NexusEntity.class);
+
+            Registries.ENTITY.rebuildTag();
+        }catch(RegisterException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void __initCommand(){
+        List<Command> commands = new ArrayList<>();
+
+        commands.add(new NexusNPCCommand());
+        commands.add(new NPCCommand());
+        commands.add(new NexusSkinCommand());
+        commands.add(new DispatchPlayerCommand());
+
+        this.getServer().getCommandMap().registerAll("hearlovnexusnpc", commands);
+    }
+
+}

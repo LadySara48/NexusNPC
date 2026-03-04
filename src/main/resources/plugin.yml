@@ -1,0 +1,29 @@
+name: NexusNPC
+main: io.hearlov.nexus.npc.NexusNPC
+version: "1.0.0"
+api: "2.0.0"
+description: "Nexus Skin Library and NPC Resources"
+author: "Hearlov"
+
+permissions:
+  nexus.npc.npc:
+    description: "General NPC Command"
+    default: op
+  nexus.npc.create:
+    description: "NPC Creation UI Command"
+    default: op
+  nexus.npc.edit:
+    description: "NPC Edit UI Command"
+    default: op
+  nexus.npc.delete:
+    description: "NPC Remove Command"
+    default: op
+  nexus.npc.id:
+    description: "General NPC ID Command"
+    default: op
+
+  nexus.npc.about:
+    default: true
+
+  nexus.npc.dispatch:
+    default: op
