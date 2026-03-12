@@ -5,7 +5,6 @@ import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
 import cn.nukkit.entity.data.Skin;
-import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.*;
@@ -56,7 +55,7 @@ public class NexusEntity extends EntityHuman implements CustomEntity{
         this.command = cmnds;
         commandSender = new NPCCommandSender(this);
 
-        //this.serveMovement();
+        this.serveMovement();
     }
 
     @Override

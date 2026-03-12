@@ -8,7 +8,6 @@ import io.hearlov.nexus.npc.skin.SkinCache;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GeometryLoaderTask extends AsyncTask {
@@ -23,7 +22,6 @@ public class GeometryLoaderTask extends AsyncTask {
 
     @Override
     public void onRun() {
-
         Map<String, String> geometryDataMap = new HashMap<>();
 
         for (String str : geometryPaths.keySet()) {
@@ -57,7 +55,6 @@ public class GeometryLoaderTask extends AsyncTask {
             }
         }
 
-        // 🔥 sonucu AsyncTask içine koy
         this.setResult(geometryDataMap);
     }
 

@@ -16,6 +16,7 @@ public class NPCCommandSender extends ConsoleCommandSender{
         return "NexusEntity";
     }
 
+    @SuppressWarnings("unused")
     public NexusEntity getOwner(){
         return owner;
     }
