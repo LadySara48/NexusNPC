@@ -27,3 +27,6 @@ permissions:
 
   nexus.npc.dispatch:
     default: op
+
+  nexus.npc.skin:
+    default: op
