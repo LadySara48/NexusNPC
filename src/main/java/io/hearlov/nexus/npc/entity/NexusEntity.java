@@ -5,10 +5,12 @@ import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
 import cn.nukkit.entity.data.Skin;
+import cn.nukkit.level.Position;
 import cn.nukkit.level.format.IChunk;
-import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.nbt.tag.ListTag;
-import cn.nukkit.nbt.tag.StringTag;
+import cn.nukkit.math.Vector3;
+import cn.nukkit.nbt.tag.*;
+import io.hearlov.nexus.npc.NexusNPC;
+import io.hearlov.nexus.npc.entity.pathfinder.PathfinderManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ public class NexusEntity extends EntityHuman implements CustomEntity{
     public List<String> command;
     public NPCCommandSender commandSender;
     public boolean NameTagAlwaysVisible;
+    public int movementType;
+
+    public Vector3 vector3;
 
     public static final String IDENTIFIER = "minecraft:player";
     @Override public @NotNull String getIdentifier(){ return IDENTIFIER; }
@@ -32,6 +37,7 @@ public class NexusEntity extends EntityHuman implements CustomEntity{
         super.initEntity();
 
         this.NameTagAlwaysVisible = this.namedTag.getBoolean("NTV");
+        this.movementType = this.namedTag.getInt("movement");
 
         setNameTagVisible(true);
         if(this.NameTagAlwaysVisible) super.setNameTagAlwaysVisible(true);
@@ -42,21 +48,37 @@ public class NexusEntity extends EntityHuman implements CustomEntity{
         for(StringTag tag : commands){
             cmnds.add(tag.data);
         }
+
+        CompoundTag dTag = this.namedTag.getCompound("fpos");
+        if(dTag.isEmpty()) this.vector3 = this.getPosition().getVector3();
+        else this.vector3 = new Vector3(dTag.getInt("x"), dTag.getInt("y"), dTag.getInt("z"));
+
         this.command = cmnds;
         commandSender = new NPCCommandSender(this);
 
+        //this.serveMovement();
     }
 
     @Override
     public void saveNBT() {
         super.saveNBT();
 
-        ListTag<StringTag> tag = new ListTag<>();
-        for (String cmnd : this.command) {
-            tag.add(new StringTag(cmnd));
+        CompoundTag dTag = new CompoundTag();
+        dTag.putInt("x", this.vector3.getFloorX());
+        dTag.putInt("y", this.vector3.getFloorY());
+        dTag.putInt("z", this.vector3.getFloorZ());
+
+        if(!this.command.isEmpty()){
+            ListTag<StringTag> tag = new ListTag<>(ListTag.TAG_String);
+            for(String cmnd : this.command){
+                tag.add(new StringTag(cmnd));
+            }
+            this.namedTag.putList("commands", tag);
         }
-        this.namedTag.putList("commands", tag);
+
         this.namedTag.putBoolean("NTV", this.NameTagAlwaysVisible);
+        this.namedTag.putInt("movement", this.movementType);
+        this.namedTag.putCompound("fpos", dTag);
     }
 
     @Override
@@ -95,11 +117,25 @@ public class NexusEntity extends EntityHuman implements CustomEntity{
         }
     }
 
+    public void serveMovement(){
+        if(this.vector3 == null || this.movementType == 0){
+            if(PathfinderManager.getInstance().isRunning(this)) PathfinderManager.getInstance().stop(this);
+            return;
+        }
+
+        if(!PathfinderManager.getInstance().isRunning(this)) PathfinderManager.getInstance().start(NexusNPC.getInstance(), this);
+    }
+
+    public Vector3 getFirstVector(){
+        return this.vector3;
+    }
+
     @Override
     public void setSkin(Skin skin){
         super.setSkin(skin);
     }
 
+    @SuppressWarnings("unused")
     public static CustomEntityDefinition definition(){
         return CustomEntityDefinition.simpleBuilder(IDENTIFIER)
                 .eid(IDENTIFIER)

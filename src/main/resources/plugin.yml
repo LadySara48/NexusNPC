@@ -1,6 +1,6 @@
 name: NexusNPC
 main: io.hearlov.nexus.npc.NexusNPC
-version: "1.0.0"
+version: "1.1.2"
 api: "2.0.0"
 description: "Nexus Skin Library and NPC Resources"
 author: "Hearlov"

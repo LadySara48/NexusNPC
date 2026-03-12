@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.hearlov"
-version = "1.0-DEV"
+version = "1.1.2-SNAPSHOT"
 
 java {
     toolchain {

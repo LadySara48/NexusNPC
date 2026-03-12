@@ -10,6 +10,7 @@ import cn.nukkit.event.player.PlayerInteractEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import io.hearlov.nexus.npc.entity.NexusEntity;
 
+@SuppressWarnings("unused")
 public class EntityListener implements Listener{
 
     @EventHandler

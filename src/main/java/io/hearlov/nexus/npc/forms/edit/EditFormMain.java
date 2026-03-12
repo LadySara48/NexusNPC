@@ -15,6 +15,7 @@ public class EditFormMain extends BasicForm{
         form.addButton("Reload Skin (Set your skin)");
         form.addButton("Select Skin");
         form.addButton("NPC Commands");
+        form.addButton("NPC Movement");
         this.entity = entity;
     }
 
@@ -36,6 +37,9 @@ public class EditFormMain extends BasicForm{
                 break;
             case 3:
                 (new EditCommandsForm(entity)).sendForm(player);
+                break;
+            case 4:
+                (new EditMovementForm(entity)).sendForm(player);
                 break;
         }
     }

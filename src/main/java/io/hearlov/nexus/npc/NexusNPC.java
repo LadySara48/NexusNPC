@@ -13,6 +13,7 @@ import cn.nukkit.registry.RegisterException;
 import cn.nukkit.registry.Registries;
 import io.hearlov.nexus.npc.command.NexusSkinCommand;
 import io.hearlov.nexus.npc.entity.NexusEntity;
+import io.hearlov.nexus.npc.entity.pathfinder.PathfinderManager;
 import io.hearlov.nexus.npc.skin.SkinCache;
 
 public class NexusNPC extends PluginBase{
@@ -37,6 +38,12 @@ public class NexusNPC extends PluginBase{
         }
 
         SkinCache.setup(getDataFolder().getAbsoluteFile().toPath());
+    }
+
+    @Override
+    public void onDisable(){
+        PathfinderManager.getInstance().stopAll();
+        SkinCache.hashMemory();
     }
 
     public void __initEntity(){
