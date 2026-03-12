@@ -13,6 +13,7 @@ import cn.nukkit.registry.RegisterException;
 import cn.nukkit.registry.Registries;
 import io.hearlov.nexus.npc.command.NexusSkinCommand;
 import io.hearlov.nexus.npc.entity.NexusEntity;
+import io.hearlov.nexus.npc.entity.pathfinder.NexusPathfinder;
 import io.hearlov.nexus.npc.entity.pathfinder.PathfinderManager;
 import io.hearlov.nexus.npc.skin.SkinCache;
 
@@ -20,6 +21,8 @@ public class NexusNPC extends PluginBase{
 
     private static NexusNPC instance;
     public static NexusNPC getInstance(){ return instance; }
+
+    public static int pathfindertick = 2;
 
     @Override
     public void onLoad(){
@@ -29,6 +32,10 @@ public class NexusNPC extends PluginBase{
 
     @Override
     public void onEnable(){
+        this.saveDefaultConfig();
+        pathfindertick = this.getConfig().getInt("Pathfinder-Per-Tick", 2);
+        NexusPathfinder.preSetup(this.getConfig());
+
         __initCommand();
 
         getServer().getPluginManager().registerEvents(new io.hearlov.nexus.npc.listener.EntityListener(), this);

@@ -1,0 +1,30 @@
+---
+
+# ─────────────────────────────────────────────
+#  Nexus NPC - Pathfinder Configuration
+# ─────────────────────────────────────────────
+
+# How many ticks between each pathfinder update.
+# Lower = smoother movement but higher CPU cost.
+# Recommended: 1 (every tick) or 2 (every other tick)
+Pathfinder-Per-Tick: 2
+
+# Maximum distance (in blocks) an NPC can wander
+# from its spawn position (firstPosition).
+# The NPC will automatically return if it exceeds this radius.
+MaxRadius: 5.0
+
+# Distance the NPC moves per pathfinder tick.
+# Higher = faster movement. Keep between 0.10 - 0.30 for natural look.
+StepSize: 0.20
+
+# How many ticks the NPC waits at its destination before picking a new goal.
+# 20 ticks = 1 second. Default 60 = ~3 seconds of idle standing.
+IdleTicks: 60
+
+# How often (in ticks) the NPC picks a new random goal to walk towards.
+# This is checked after IdleTicks expires.
+# 100 ticks = ~5 seconds between new goals.
+NewGoalTicks: 100
+
+...
