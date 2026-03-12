@@ -89,8 +89,6 @@ Execute commands **on behalf of a player** without giving them elevated permissi
 
 This was designed primarily to make NPC interactions that open forms easier to handle — instead of running a command as the server or console, it is dispatched as the targeted player, preserving context-sensitive form triggers and UI flows.
 
-> **Note:** Use with caution. DPC bypasses the player's own permission level for the dispatched command.
-
 ---
 
 ## Commands
