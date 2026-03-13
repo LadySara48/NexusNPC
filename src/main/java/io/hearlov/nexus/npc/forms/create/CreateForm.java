@@ -39,7 +39,7 @@ public class CreateForm extends HCustomForm{
         }
 
         npc.spawnToAll();
-        player.sendMessage("NPC Created: " + npc.getUniqueId());
+        player.sendMessage("NPC Created: " + npc.getId());
         player.sendMessage("You can type '/npc edit' and click on the NPC to edit it.");
     }
 
